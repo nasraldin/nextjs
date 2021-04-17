@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.3.15",
+    "express-rate-limit": "^5.2.6",
     "graphql": "^15.5.0",
     "moment": "^2.29.1",
     "next": "10.x",
