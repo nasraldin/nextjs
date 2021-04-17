@@ -1,65 +1,108 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import React, { Component } from "react";
+import Head from "next/head";
+import ClientOnly from "../components/ClientOnly";
+import Flights from "../components/Flights";
+import styles from "../styles/Home.module.css";
+import {
+  debounce,
+  getLocationCode,
+  getTomorrowDate,
+  getOnDate,
+} from "../util/utils";
 
-export default function Home() {
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+export default class Home extends Component {
+  searchQuery = {
+    originLocationCode: "DXB",
+    destinationLocationCode: "BEY",
+    departureDate: "2021-04-19",
+  };
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+  loading = true;
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+  onChange = (e) => {
+    const value = e.target.value;
+    this.handleFilter(value);
+  };
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+  handleFilter = debounce((val) => {
+    onSearch(val);
+  }, 300);
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
+  render() {
+    // const { loading } = this.props.data;
+    // const { items } = this.props.data.listIceCreams;
+    return (
+      // <div className="App">
+      //   <input
+      //     style={styles.input}
+      //     onChange={this.onChange.bind(this)}
+      //     placeholder="Search for ice cream"
+      //   />
+      //   {!!loading && <p>Searching...</p>}
+      //   {!loading && !items.length && <p>Sorry, no results.</p>}
+      //   {!loading &&
+      //     items.map((item, index) => (
+      //       <div key={index} style={styles.container}>
+      //         <p style={styles.title}>{item.name}</p>
+      //         <p style={styles.description}>{item.description}</p>
+      //       </div>
+      //     ))}
+      // </div>
 
+      <div className={styles.container}>
+        <Head>
+          <title>Create Next App</title>
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+
+        <main className={styles.main}>
+          <h1 className={styles.title}>Flights search</h1>
+          <p className={styles.description}>
+            Trips tailored to your every need
+          </p>
+
+          <div className={styles.search_wrp}>
+            <input
+              className={styles.search}
+              type="text"
+              onChange={this.onChange.bind(this)}
+              placeholder="Flights from DXB to BEY tomorrow"
+            />
+          </div>
+
+          <ClientOnly>
+            <Flights
+              searchQuery={this.searchQuery}
+              loadFlights={this.loading}
+            />
+          </ClientOnly>
+        </main>
+
+        <footer className={styles.footer}>
           <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
+            href="https://astrotabs.com"
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
+            Powered by{" "}
+            <img
+              src="/astrotabs.svg"
+              alt="astrotabs Logo"
+              className={styles.logo}
+            />{" "}
+            astrotabs
           </a>
+        </footer>
+      </div>
+    );
+  }
+}
 
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
+export function onSearch(searchQuery) {
+  const from = getLocationCode(searchQuery, "from");
+  const to = getLocationCode(searchQuery, "to");
+  const dateOn = getOnDate(searchQuery, "on");
+  const isTomorrow = searchQuery.includes("tomorrow");
 
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
-  )
+  console.log(from, to, isTomorrow, getTomorrowDate(), dateOn);
 }
