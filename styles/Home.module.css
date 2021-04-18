@@ -151,23 +151,16 @@
   margin-right: 0.25em;
 }
 
-@media (max-width: 600px) {
+@media (min-width: 600px) {
   .grid {
     width: 100%;
     flex-direction: column;
   }
-
   .search {
     width: 100%;
   }
   .flights {
     width: 620px;
-  }
-}
-
-@media (min-width: 600px) {
-  .search {
-    width: 100%;
   }
 }
 
