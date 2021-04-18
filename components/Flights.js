@@ -52,7 +52,7 @@ export default function Flights(props) {
             </div>
           </div>
         )}
-        {checkStops && stop !== null && (
+        {checkStops && stops !== null && (
           <div>
             <div className={styles.box_left}>
               <h3>{formatTime(stops.departureAt, stops.arrivalAt)}</h3>
