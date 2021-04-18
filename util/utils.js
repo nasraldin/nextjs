@@ -1,15 +1,18 @@
 import moment from "moment";
 
-export function debounce(func, timeout = 300) {
-  let timer;
-  return (...args) => {
-    if (!timer) {
-      func.apply(this, args);
-    }
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      timer = undefined;
-    }, timeout);
+export function debounce(func, wait, immediate) {
+  var timeout;
+  return function () {
+    var context = this,
+      args = arguments;
+    var later = function () {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
+    };
+    var callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) func.apply(context, args);
   };
 }
 
@@ -43,24 +46,31 @@ export function getLocationCode(query, location) {
 }
 
 export function getTomorrowDate() {
-  const today = new Date();
-  const tomorrow = today.setDate(today.getDate() + 1);
-  return new Date(tomorrow).toISOString().substring(0, 10);
+  var today = moment();
+  var tomorrow = today.add(1, "day");
+  return moment().add(1, "day").format("YYYY-MM-DD");
 }
 
 export function getOnDate(query, parm) {
   if (query.includes(parm)) {
+    const today = moment();
     const date = query.toLowerCase().split(parm)[1];
-    console.log(date);
 
-    const today = new Date();
-    const test = new Date(date);
-    console.log(test.getUTCMonth());
+    // extract the short date like May 31 and convert to valide date so we can parse to graphql
+    // by check the date is is after today
+    const isInFuture = moment(date).isAfter(today);
+    const formatDate = moment(date).format("YYYY-MM-DD").substring(0, 10);
+    const isValidDate = moment(formatDate).isValid();
 
-    var now = moment(date)
-      .format()
-      .substring(0, 10)
-      .replace("2001", moment().year());
-    console.log(now);
+    if (!isValidDate) {
+      console.log("Date is not valid!");
+      return;
+    }
+
+    if (!isInFuture) {
+      return formatDate.replace(formatDate.substring(0, 4), moment().year());
+    } else {
+      return formatDate;
+    }
   }
 }

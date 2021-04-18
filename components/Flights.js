@@ -1,18 +1,14 @@
 import { useQuery, gql } from "@apollo/client";
 import styles from "../styles/Home.module.css";
 import { formatTime, formatDuration } from "../util/utils";
+import React, { useState } from "react";
 
-export default function Flights({ searchQuery, loadFlights }) {
-  let flights = null;
+export default function Flights(props) {
+  let flights = {};
   let haveStops = false;
 
-  if (
-    searchQuery.originLocationCode &&
-    searchQuery.destinationLocationCode &&
-    searchQuery.departureDate &&
-    loadFlights
-  ) {
-    const { data, loading, error } = onSearch(searchQuery);
+  if (props.loadFlights) {
+    const { data, loading, error } = onSearch(props.searchQuery);
 
     if (loading) {
       return <h2>Loading...</h2>;
@@ -25,10 +21,6 @@ export default function Flights({ searchQuery, loadFlights }) {
 
     flights = data.flights;
   }
-
-  console.log("loadFlights", loadFlights);
-  console.log("searchQuery", searchQuery);
-  console.log("flights", flights);
 
   function itineraries(flight, checkStops) {
     let flighTime, operating, duration, flightFromTo, stops;
@@ -80,7 +72,9 @@ export default function Flights({ searchQuery, loadFlights }) {
 
   return (
     <div className={styles.flightsWrp}>
-      {loadFlights && (
+      {/* {!this.loading && <p>Sorry, no results.</p>} */}
+
+      {props.loadFlights && (
         <div>
           <div className={styles.flights}>
             <hr className={styles.hr} />
