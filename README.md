@@ -1,3 +1,5 @@
+A simple next.js react.js app that allows users to search for flights between two locations with basic words instead of complicated dropdowns and calendar, for example, the user would search “Flights from DXB to CAI tomorrow” or “from DXB to CAI on May 12 or with year 22 or 20222” and the interface will list the available flights, separating them between non-stop and 1+ stops.
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
